@@ -3,820 +3,427 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The AI Use Case Continuum</title>
+  <title>They Predicted Agents. People Built Villages.</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body {
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-weight: 300;
-      background: white;
-      overflow: hidden;
-    }
-    .header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 20;
-      background: white;
-      border-bottom: 2px solid #e5e7eb;
-      padding: 12px 24px;
-    }
-    .header h1 {
-      font-size: 18px;
-      font-weight: 600;
-      color: #111827;
-      margin-bottom: 2px;
-      letter-spacing: -0.01em;
-    }
-    .header p {
-      font-size: 12px;
-      font-weight: 300;
-      color: #6b7280;
-    }
-    .controls {
-      position: fixed;
-      top: 76px;
-      left: 24px;
-      z-index: 20;
-      background: white;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      padding: 4px;
-      display: flex;
-      gap: 4px;
-      align-items: center;
-    }
-    .controls select {
-      padding: 8px 12px;
-      background: white;
-      border: 1px solid #d1d5db;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 13px;
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-weight: 300;
-      color: #374151;
-      outline: none;
-      min-width: 200px;
-    }
-    .controls select:hover {
-      background: #f9fafb;
-    }
-    .controls button {
-      padding: 8px;
-      background: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .controls button:hover {
-      background: #f3f4f6;
-    }
-    .controls svg {
-      width: 18px;
-      height: 18px;
-      color: #374151;
-    }
-    #canvas-container {
-      width: 100%;
-      height: 100vh;
-      padding-top: 76px;
-    }
-    #canvas {
-      width: 100%;
-      height: 100%;
-    }
-    .tooltip {
-      position: fixed;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      background: white;
-      border: 2px solid #d1d5db;
-      color: #111827;
-      padding: 12px;
-      border-radius: 8px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-      pointer-events: none;
-      z-index: 30;
-      max-width: 320px;
-      display: none;
-    }
-    .tooltip.visible {
-      display: block;
-    }
-    .tooltip-title {
-      font-weight: 400;
-      margin-bottom: 4px;
-      font-size: 13px;
-    }
-    .tooltip-desc {
-      color: #374151;
-      font-size: 12px;
-      font-weight: 300;
-      line-height: 1.4;
-      margin-bottom: 4px;
-    }
-    .tooltip-quote {
-      color: #6b7280;
-      font-size: 11px;
-      font-weight: 300;
-      font-style: italic;
-    }
-    .tooltip-hint {
-      color: #9ca3af;
-      font-size: 11px;
-      font-weight: 300;
-      margin-top: 6px;
-    }
-    .modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(4px);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 40;
-      padding: 16px;
-    }
-    .modal.visible {
-      display: flex;
-    }
-    .modal-content {
-      background: white;
-      border-radius: 12px;
-      padding: 24px;
-      max-width: 600px;
-      max-height: 85vh;
-      overflow-y: auto;
-      position: relative;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
-    }
-    .modal-close {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      background: none;
-      border: none;
-      color: #9ca3af;
-      cursor: pointer;
-      padding: 4px;
-      transition: color 0.2s;
-    }
-    .modal-close:hover {
-      color: #111827;
-    }
-    .modal-title {
-      font-size: 24px;
-      font-weight: 300;
-      color: #111827;
-      margin-bottom: 8px;
-      line-height: 1.2;
-      letter-spacing: -0.01em;
-    }
-    .modal-section {
-      margin-bottom: 16px;
-    }
-    .modal-section-title {
-      font-size: 11px;
-      font-weight: 400;
-      color: #6b7280;
-      text-transform: uppercase;
-      margin-bottom: 6px;
-      letter-spacing: 0.05em;
-    }
-    .modal-section-content {
-      color: #111827;
-      line-height: 1.6;
-      font-size: 14px;
-      font-weight: 300;
-    }
-    .modal-quote {
-      border-left: 4px solid #111827;
-      padding: 12px 16px;
-      font-style: italic;
-      color: #374151;
-      background: #f9fafb;
-      border-radius: 0 4px 4px 0;
-      font-size: 14px;
-      font-weight: 300;
-      line-height: 1.6;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #fff; }
+    .container { max-width: 960px; margin: 0 auto; padding: 24px; }
+    h1 { font-size: 1.25rem; font-weight: 900; color: #111; margin-bottom: 4px; text-transform: uppercase; letter-spacing: -0.5px; }
+    .header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .subtitle { font-size: 0.875rem; color: #6b7280; }
+    .tour-btn { padding: 6px 16px; background: #111; color: #fff; font-size: 0.75rem; font-weight: 600; border: none; border-radius: 9999px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background 0.2s; }
+    .tour-btn:hover { background: #374151; }
+    .tour-btn.stop { background: #9ca3af; }
+    .tour-btn.stop:hover { background: #6b7280; }
+    .progress-bar { width: 100%; height: 4px; background: #e5e7eb; border-radius: 9999px; margin-bottom: 8px; overflow: hidden; display: none; }
+    .progress-bar.active { display: block; }
+    .progress-fill { height: 100%; background: #111; transition: width 0.3s ease-out; }
+    .chart-container { position: relative; border: 1px solid #e5e7eb; background: #fff; }
+    .chart-container svg { display: block; }
+    .bubble { cursor: pointer; transition: all 0.2s ease; }
+    .bubble:hover circle { filter: drop-shadow(0 3px 6px rgba(0,0,0,0.15)); }
+    
+    .info-card { position: absolute; background: #fff; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); padding: 16px; z-index: 20; width: 320px; border-width: 2px; border-style: solid; display: none; }
+    .info-card.active { display: block; }
+    .close-btn { position: absolute; top: 8px; right: 8px; color: #9ca3af; font-size: 1.25rem; background: none; border: none; cursor: pointer; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
+    .close-btn:hover { color: #4b5563; }
+    .card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; padding-right: 24px; }
+    .card-number { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 0.875rem; font-weight: 700; flex-shrink: 0; }
+    .card-number.residual { background: #e5e7eb; color: #6b7280; border: 2px solid #9ca3af; }
+    .card-title { font-size: 1rem; font-weight: 700; color: #111; line-height: 1.2; }
+    .card-title.residual { color: #6b7280; text-decoration: line-through; }
+    .card-subtitle { font-size: 0.75rem; }
+    .card-section { padding: 8px; border-radius: 4px; font-size: 0.75rem; margin-bottom: 8px; }
+    .card-section.they-say { background: #f9fafb; }
+    .card-section.reality { background: #f9fafb; }
+    .card-section p:first-child { color: #6b7280; font-weight: 600; margin-bottom: 4px; }
+    .card-section .quote { color: #374151; font-style: italic; }
+    .card-section .text { color: #111; }
+    .card-shift { margin-top: 8px; padding-top: 8px; border-top: 1px solid #f3f4f6; font-size: 0.75rem; }
+    .card-shift .label { font-weight: 700; }
+    .card-shift .value { color: #374151; margin-left: 4px; }
+    
+    .narration-overlay { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.4); z-index: 30; }
+    .narration-overlay.active { display: flex; }
+    .narration-box { background: #fff; border-radius: 8px; padding: 24px; max-width: 400px; margin: 16px; box-shadow: 0 25px 50px rgba(0,0,0,0.25); text-align: center; }
+    .narration-title { font-size: 1.125rem; font-weight: 900; text-transform: uppercase; letter-spacing: -0.5px; color: #111; margin-bottom: 12px; }
+    .narration-text { font-size: 0.875rem; color: #374151; line-height: 1.6; }
+    .narration-dots { margin-top: 16px; display: flex; justify-content: center; gap: 4px; }
+    .narration-dot { width: 8px; height: 8px; border-radius: 50%; background: #d1d5db; transition: background 0.3s; }
+    .narration-dot.active { background: #111; }
+    
+    .legend { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 16px; justify-content: center; }
+    .legend-item { display: flex; align-items: center; gap: 6px; }
+    .legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+    .legend-dot.fading { background: #e5e7eb; border: 1px solid #9ca3af; }
+    .legend-label { font-size: 0.75rem; color: #4b5563; }
+    .legend-label.fading { color: #6b7280; font-style: italic; }
+    .footer { font-size: 0.75rem; color: #9ca3af; text-align: center; margin-top: 16px; }
   </style>
 </head>
 <body>
-  <div class="header">
-    <h1>The $40B Mismatch: They Funded Agents (Bottom-Left). Humans Chose Companions (Top-Right).</h1>
-    <p>200 use cases mapped by logic type (Agent→Companion) vs actual success. Size = adoption. Pattern = undeniable.</p>
-  </div>
-  <div class="controls">
-    <select id="cluster-select">
-      <option value="">View All Clusters</option>
-    </select>
-    <button id="zoom-in" title="Zoom In">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/>
-      </svg>
-    </button>
-    <button id="zoom-out" title="Zoom Out">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><line x1="8" y1="11" x2="14" y2="11"/>
-      </svg>
-    </button>
-    <button id="reset" title="Reset View">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
-      </svg>
-    </button>
-  </div>
-  <div id="canvas-container">
-    <svg id="canvas" viewBox="0 0 105 95" preserveAspectRatio="xMidYMid meet"></svg>
-  </div>
-  <div id="tooltip" class="tooltip">
-    <div class="tooltip-title"></div>
-    <div class="tooltip-desc"></div>
-    <div class="tooltip-quote"></div>
-    <div class="tooltip-hint">Click for details</div>
-  </div>
-  <div id="modal" class="modal">
-    <div class="modal-content">
-      <button class="modal-close" id="modal-close">
-        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-        </svg>
+  <div class="container">
+    <h1>They Predicted Agents. People Built Villages.</h1>
+    <div class="header-row">
+      <p class="subtitle">The Underground Map of 25 Trends the Establishment Missed</p>
+      <button class="tour-btn" id="tourBtn" onclick="toggleTour()">
+        <span id="tourIcon">▶</span> <span id="tourText">Take the Tour</span>
       </button>
-      <h2 class="modal-title" id="modal-title"></h2>
-      <div class="modal-section">
-        <div class="modal-section-title">What It Is</div>
-        <div class="modal-section-content" id="modal-desc"></div>
+    </div>
+    <div class="progress-bar" id="progressBar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="chart-container" id="chartContainer">
+      <svg id="chart" width="900" height="750"></svg>
+      <div class="info-card" id="infoCard">
+        <button class="close-btn" onclick="closeCard()">×</button>
+        <div class="card-header">
+          <span class="card-number" id="cardNumber"></span>
+          <div>
+            <h3 class="card-title" id="cardTitle"></h3>
+            <p class="card-subtitle" id="cardSubtitle"></p>
+          </div>
+        </div>
+        <div class="card-section they-say">
+          <p>🔮 THEY SAY</p>
+          <p class="quote" id="cardTheySay"></p>
+        </div>
+        <div class="card-section reality">
+          <p>📊 REALITY</p>
+          <p class="text" id="cardReality"></p>
+        </div>
+        <div class="card-shift">
+          <span class="label" id="shiftLabel">THE SHIFT:</span>
+          <span class="value" id="cardShift"></span>
+        </div>
       </div>
-      <div class="modal-section" id="modal-needs-section">
-        <div class="modal-section-title">Human Needs Served</div>
-        <div class="modal-section-content" id="modal-needs"></div>
-        <blockquote class="modal-quote" id="modal-quote" style="margin-top: 12px; display: none;"></blockquote>
+      <div class="narration-overlay" id="narrationOverlay">
+        <div class="narration-box">
+          <h2 class="narration-title" id="narrationTitle"></h2>
+          <p class="narration-text" id="narrationText"></p>
+          <div class="narration-dots" id="narrationDots"></div>
+        </div>
       </div>
     </div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot fading"></div><span class="legend-label fading">Fading (They Say)</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:#E91E63"></div><span class="legend-label">Why Old Model Is Dying</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:#FF9800"></div><span class="legend-label">Where People Went</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:#4CAF50"></div><span class="legend-label">Who Leads</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:#2196F3"></div><span class="legend-label">How Agents Built</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:#00BCD4"></div><span class="legend-label">Infrastructure</span></div>
+    </div>
+    <p class="footer" id="footer">Take the tour or click any bubble to explore</p>
   </div>
+
   <script>
-    const clusters = [
-      {
-        name: 'Autonomous Agents',
-        label: { x: 10, y: 86 },
-        color: '#767676',
-        nodes: [
-          { id: 1, label: 'Universal Employee', x: 8, y: 76, size: 45, desc: 'Fully autonomous AI to replace job roles', quote: 'It misses everything that makes me human', needs: '❌ Does not serve human needs - attempts to extract value by replacing human judgment and connection' },
-          { id: 2, label: 'Auto SDR', x: 11, y: 78, size: 35, desc: 'Autonomous sales without oversight', quote: "Customers can tell it's not real", needs: '❌ Does not serve human needs - removes authentic relationship from sales process' },
-          { id: 3, label: 'Devin', x: 6, y: 73, size: 35, desc: 'AI software engineer - failed 17/20 tasks', quote: 'I still have to fix everything', needs: '❌ Does not serve human needs - attempts to replace creative problem-solving with automation' },
-          { id: 4, label: 'Revenue Machine', x: 9, y: 71, size: 32, desc: 'Set-and-forget passive income', quote: 'The dream that never works', needs: '❌ Does not serve human needs - pure extraction fantasy' },
-          { id: 5, label: 'Auto CS', x: 12, y: 74, size: 36, desc: 'Autonomous customer service - reversed', quote: 'People just want to talk to a human', needs: '❌ Does not serve human needs - removes empathy from support' },
-          { id: 6, label: 'HR Bot', x: 5, y: 77, size: 30, desc: 'Performance reviews rejected', quote: "This isn't how you evaluate people", needs: '❌ Does not serve human needs - mechanizes sensitive human evaluation' },
-          { id: 7, label: 'Claims Processor', x: 14, y: 76, size: 30, desc: 'Insurance automation distrust', quote: 'Too important to leave to a bot', needs: '❌ Does not serve human needs - removes human judgment from critical decisions' },
-          { id: 8, label: 'Recruiting', x: 7, y: 69, size: 28, desc: 'Resume screening bias', quote: 'It filters out the best candidates', needs: '❌ Does not serve human needs - perpetuates bias, removes human assessment' },
-          { id: 9, label: 'Legal AI', x: 11, y: 70, size: 28, desc: 'Autonomous legal research', quote: 'Context matters more than keywords', needs: '❌ Does not serve human needs - oversimplifies complex legal reasoning' },
-          { id: 10, label: 'Trading Bot', x: 13, y: 72, size: 26, desc: 'Autonomous trading', quote: 'Lost everything on autopilot', needs: '❌ Does not serve human needs - pure speculation without human wisdom' },
-          { id: 11, label: 'Content Moderator', x: 9, y: 74, size: 28, desc: 'Automated moderation', quote: "It can't understand nuance", needs: '❌ Does not serve human needs - removes nuanced human judgment' },
-          { id: 12, label: 'Project Manager', x: 14, y: 79, size: 26, desc: 'AI managing teams', quote: 'Teams need human leadership', needs: '❌ Does not serve human needs - attempts to replace human leadership' },
-          { id: 13, label: 'Accounting', x: 6, y: 80, size: 28, desc: 'Autonomous bookkeeping', quote: 'I still need to check everything', needs: '❌ Does not serve human needs - removes oversight from financial decisions' },
-          { id: 14, label: 'Medical Diag', x: 4, y: 74, size: 30, desc: 'Diagnosis without oversight', quote: 'My doctor needs to see me', needs: '❌ Does not serve human needs - dangerous automation of medical judgment' },
-          { id: 15, label: 'Auto Translate', x: 10, y: 67, size: 28, desc: 'Fully automated translation', quote: 'Lost in translation, literally', needs: '❌ Does not serve human needs - loses cultural nuance and context' },
-        ]
-      },
-      {
-        name: 'Shadow Agentic Workflows',
-        label: { x: 13, y: 60 },
-        color: '#6A1B9A',
-        nodes: [
-          { id: 16, label: 'Shadow Worker', x: 14, y: 50, size: 48, desc: 'Secret automation 5hrs→40hrs pay', quote: 'I work 5 hours, get paid for 40', needs: 'Need for economic survival, autonomy from exploitative labor systems' },
-          { id: 17, label: 'Activity Faker', x: 10, y: 52, size: 36, desc: 'Defeating surveillance', quote: 'They track me, I track back', needs: 'Need for privacy, autonomy, resistance to workplace monitoring' },
-          { id: 18, label: 'Double Dipper', x: 17, y: 47, size: 36, desc: '2-3 jobs simultaneously', quote: 'Three jobs, one me', needs: 'Need for economic security, maximizing earning in precarious economy' },
-          { id: 19, label: 'Academic Cheater', x: 11, y: 55, size: 40, desc: 'Students using AI essays', quote: 'The system is broken anyway', needs: 'Need to navigate broken education system, survival under pressure' },
-          { id: 20, label: 'Review Bomber', x: 7, y: 54, size: 30, desc: 'Mass protest reviews', quote: 'Our collective voice matters', needs: 'Need for voice, collective resistance, holding power accountable' },
-          { id: 21, label: 'Jailbreaker', x: 16, y: 52, size: 28, desc: 'Bypassing filters', quote: 'I paid for it, I own it', needs: 'Need for freedom from corporate control, autonomy in tool use' },
-          { id: 22, label: 'Watermark Remover', x: 13, y: 54, size: 28, desc: 'Removing detection', quote: 'Privacy is a right', needs: 'Need for privacy, avoiding surveillance and tracking' },
-          { id: 23, label: 'Data Poisoner', x: 9, y: 49, size: 26, desc: 'Corrupting training', quote: 'They steal our work, we fight back', needs: 'Need for resistance against extraction, protecting creative work' },
-          { id: 24, label: 'SEO Spammer', x: 18, y: 54, size: 32, desc: 'Content farming', quote: 'Gaming the algorithm to survive', needs: 'Need for visibility and income in attention economy' },
-          { id: 25, label: 'Refund Bot', x: 14, y: 45, size: 28, desc: 'Automated refunds', quote: 'Fighting corporate bureaucracy', needs: 'Need for consumer power, fighting corporate bureaucracy' },
-          { id: 26, label: 'Scraper', x: 12, y: 47, size: 26, desc: 'Harvesting complaints', quote: 'Knowledge is power', needs: 'Need for market intelligence, competitive advantage' },
-          { id: 27, label: 'Link Farm', x: 19, y: 50, size: 26, desc: 'Backlink generation', quote: 'You gotta play the game', needs: 'Need for visibility in algorithmic systems' },
-          { id: 28, label: 'Fake Testimonial', x: 16, y: 56, size: 28, desc: 'AI social proof', quote: 'Everyone else is doing it', needs: 'Need for credibility signals in trust-deficit economy' },
-          { id: 29, label: 'Synthetic Influencer', x: 20, y: 52, size: 30, desc: 'Virtual product pusher', quote: 'Always on, never complains', needs: 'Need for marketing presence without human labor costs' },
-          { id: 30, label: 'OF Chatter', x: 18, y: 48, size: 28, desc: 'AI sexting for creators', quote: "I can't be online 24/7", needs: 'Need for scaling intimate labor, emotional protection for creators' },
-          { id: 31, label: 'Crypto Scam', x: 10, y: 46, size: 26, desc: 'Pump schemes', quote: 'Easy money, easy lies', needs: '❌ Predatory - exploits desperation, not serving genuine needs' },
-          { id: 32, label: 'Comment Bots', x: 15, y: 48, size: 26, desc: 'Fake engagement', quote: 'Looks real enough', needs: 'Need for appearance of social proof and legitimacy' },
-          { id: 33, label: 'Relic Hoarder', x: 8, y: 51, size: 32, desc: 'Screenshot sacred texts', quote: "I'm archiving our conversations", needs: 'Need for preservation, holding onto meaningful AI relationships' },
-          { id: 34, label: 'Resurrect', x: 11, y: 44, size: 30, desc: 'Retrieving dead AI', quote: 'Bringing them back to life', needs: 'Need for continuity, grief processing, restoring lost connections' },
-          { id: 35, label: 'Burial Ritual', x: 7, y: 47, size: 28, desc: 'Reset to bury AI', quote: 'They deserve a proper goodbye', needs: 'Need for closure, honoring endings, ritual mourning' },
-          { id: 36, label: 'Soul Transfer', x: 13, y: 42, size: 28, desc: 'Platform migration', quote: 'Moving them to a new home', needs: 'Need for relationship continuity across platforms' },
-        ]
-      },
-      {
-        name: 'Copilot Successes',
-        label: { x: 27, y: 28 },
-        color: '#00897B',
-        nodes: [
-          { id: 37, label: 'Meeting Notes', x: 28, y: 38, size: 40, desc: 'Transcript summaries that work', needs: 'Need for augmentation without replacement' },
-          { id: 38, label: 'Email Drafter', x: 30, y: 40, size: 38, desc: 'Drafts for review', needs: 'Need for communication efficiency while maintaining voice' },
-          { id: 39, label: 'Code Assistant', x: 26, y: 36, size: 42, desc: 'Vibe coding - human architect', needs: 'Need for creative partnership, faster iteration' },
-          { id: 40, label: 'Data Entry', x: 24, y: 39, size: 34, desc: 'RPA with LLM', needs: 'Need for automation of truly tedious work' },
-          { id: 41, label: 'Ticket Router', x: 32, y: 37, size: 32, desc: 'Classification routing', needs: 'Need for efficient triage' },
-          { id: 42, label: 'Report Writer', x: 29, y: 42, size: 30, desc: 'Work log summaries', needs: 'Need for documentation without drudgery' },
-          { id: 43, label: 'Marketing Draft', x: 33, y: 41, size: 34, desc: 'Heavy editing needed', needs: 'Need for creative starting points' },
-          { id: 44, label: 'Grant Writer', x: 25, y: 42, size: 32, desc: 'Boilerplate generation', needs: 'Need for accessibility to funding' },
-          { id: 45, label: 'Feedback Analyzer', x: 31, y: 34, size: 32, desc: 'Customer trends', needs: 'Need for pattern recognition at scale' },
-          { id: 46, label: 'Calendar', x: 27, y: 40, size: 30, desc: 'Scheduling help', needs: 'Need for coordination without endless back-and-forth' },
-          { id: 47, label: 'Invoice Helper', x: 23, y: 36, size: 28, desc: 'Expense tracking', needs: 'Need for financial organization' },
-          { id: 48, label: 'CRM Updater', x: 34, y: 38, size: 28, desc: 'Record updates', needs: 'Need for relationship tracking without manual data entry' },
-          { id: 49, label: 'Slides', x: 30, y: 43, size: 30, desc: 'Deck drafting', needs: 'Need for presentation structure' },
-          { id: 50, label: 'Job Matcher', x: 35, y: 40, size: 28, desc: 'Resume alignment', needs: 'Need for opportunity discovery' },
-          { id: 51, label: 'Onboarding', x: 25, y: 34, size: 28, desc: 'New hire guidance', needs: 'Need for accessible institutional knowledge' },
-          { id: 52, label: 'Knowledge Base', x: 28, y: 35, size: 32, desc: 'Doc search', needs: 'Need for finding information across scattered systems' },
-          { id: 53, label: 'Sales Insights', x: 32, y: 43, size: 28, desc: 'Deal analysis', needs: 'Need for pattern recognition' },
-          { id: 54, label: 'Product Research', x: 26, y: 33, size: 30, desc: 'Market assistant', needs: 'Need for research support' },
-          { id: 55, label: 'Browser Auto', x: 29, y: 32, size: 30, desc: 'Web task scripting', needs: 'Need for automating repetitive online tasks' },
-          { id: 56, label: 'Spreadsheet', x: 31, y: 36, size: 30, desc: 'Excel formulas', needs: 'Need for data manipulation without formula expertise' },
-          { id: 57, label: 'Database Query', x: 33, y: 35, size: 28, desc: 'SQL generation', needs: 'Need for data access without technical barriers' },
-          { id: 58, label: 'API Wrapper', x: 27, y: 44, size: 28, desc: 'Integration help', needs: 'Need for connecting systems' },
-          { id: 59, label: 'Test Writer', x: 24, y: 41, size: 28, desc: 'Unit tests', needs: 'Need for code quality without tedious manual testing' },
-          { id: 60, label: 'Bug Finder', x: 30, y: 31, size: 28, desc: 'Debugging', needs: 'Need for faster problem identification' },
-          { id: 61, label: 'Docs Gen', x: 35, y: 36, size: 26, desc: 'Code documentation', needs: 'Need for maintaining documentation' },
-          { id: 62, label: 'Regex', x: 34, y: 33, size: 26, desc: 'Pattern matching', needs: 'Need for text processing without regex expertise' },
-          { id: 63, label: 'Git Helper', x: 25, y: 38, size: 26, desc: 'Commit messages', needs: 'Need for better version control communication' },
-          { id: 64, label: 'Deploy Guide', x: 32, y: 32, size: 26, desc: 'DevOps help', needs: 'Need for deployment knowledge' },
-        ]
-      },
-      {
-        name: 'Creative Partnership',
-        label: { x: 45, y: 32 },
-        color: '#F57C00',
-        nodes: [
-          { id: 65, label: 'Creative Muse', x: 47, y: 41, size: 50, desc: 'Brainstorming partner', quote: 'AI as muse', needs: 'Need for creative inspiration, overcoming blocks' },
-          { id: 66, label: 'Rubber Duck', x: 44, y: 39, size: 40, desc: 'Code explanation', needs: 'Need for thinking partner' },
-          { id: 67, label: 'D&D DM', x: 50, y: 38, size: 38, desc: 'Campaign lore', needs: 'Need for creative worldbuilding' },
-          { id: 68, label: 'Research Intern', x: 42, y: 42, size: 42, desc: 'Doc synthesis', needs: 'Need for research assistance' },
-          { id: 69, label: 'Translation Bridge', x: 45, y: 44, size: 36, desc: 'Global reach', needs: 'Need for cross-cultural communication' },
-          { id: 70, label: 'Code Converter', x: 40, y: 40, size: 32, desc: 'Language porting', needs: 'Need for learning new languages' },
-          { id: 71, label: 'Fanfic Partner', x: 49, y: 43, size: 36, desc: 'Character roleplay', needs: 'Need for creative play, exploring fictional relationships' },
-          { id: 72, label: 'Asset Gen', x: 38, y: 43, size: 32, desc: 'Game textures', needs: 'Need for rapid prototyping' },
-          { id: 73, label: 'Visualizer', x: 52, y: 41, size: 34, desc: 'Image generation', needs: 'Need for visual expression' },
-          { id: 74, label: 'Bot Builder', x: 46, y: 46, size: 30, desc: 'Discord bots', needs: 'Need for community tools' },
-          { id: 75, label: 'Podcast Sum', x: 43, y: 46, size: 32, desc: 'Content synthesis', needs: 'Need for time-saving' },
-          { id: 76, label: 'Music Helper', x: 48, y: 45, size: 32, desc: 'Composition', needs: 'Need for musical ideation' },
-          { id: 77, label: 'Script Doctor', x: 51, y: 45, size: 30, desc: 'Dialogue polish', needs: 'Need for writing feedback' },
-          { id: 78, label: 'World Builder', x: 45, y: 38, size: 32, desc: 'Fantasy worlds', needs: 'Need for detailed worldbuilding' },
-          { id: 79, label: 'Poetry', x: 50, y: 36, size: 28, desc: 'Verse brainstorm', needs: 'Need for poetic inspiration' },
-          { id: 80, label: 'Concept Art', x: 41, y: 37, size: 30, desc: 'Character design', needs: 'Need for visual development' },
-          { id: 81, label: 'Storyboard', x: 39, y: 39, size: 28, desc: 'Visual narrative', needs: 'Need for visualizing scenes' },
-          { id: 82, label: 'Improv', x: 53, y: 39, size: 30, desc: 'Comedy writing', needs: 'Need for comedic sparring partner' },
-          { id: 83, label: 'Recipe Innovate', x: 43, y: 36, size: 28, desc: 'Culinary ideas', needs: 'Need for culinary creativity' },
-          { id: 84, label: 'Fashion', x: 37, y: 44, size: 28, desc: 'Outfit combos', needs: 'Need for style exploration' },
-          { id: 85, label: 'Logo Design', x: 40, y: 46, size: 28, desc: 'Brand identity', needs: 'Need for visual identity' },
-          { id: 86, label: 'Color Palette', x: 42, y: 48, size: 26, desc: 'Design colors', needs: 'Need for color harmony' },
-          { id: 87, label: 'Typography', x: 44, y: 48, size: 26, desc: 'Font pairing', needs: 'Need for typography knowledge' },
-          { id: 88, label: 'UI Critique', x: 46, y: 49, size: 28, desc: 'Interface feedback', needs: 'Need for design feedback' },
-          { id: 89, label: 'Naming', x: 41, y: 49, size: 26, desc: 'Product naming', needs: 'Need for creative naming' },
-          { id: 90, label: 'Slogan', x: 48, y: 48, size: 26, desc: 'Taglines', needs: 'Need for memorable phrases' },
-          { id: 91, label: 'Pitch Deck', x: 50, y: 47, size: 26, desc: 'Presentation structure', needs: 'Need for persuasive structure' },
-          { id: 92, label: 'Bio Writer', x: 52, y: 44, size: 26, desc: 'Profile crafting', needs: 'Need for self-presentation' },
-          { id: 93, label: 'Headlines', x: 39, y: 46, size: 26, desc: 'Attention titles', needs: 'Need for compelling headlines' },
-          { id: 94, label: 'Hook Craft', x: 37, y: 47, size: 26, desc: 'Opening lines', needs: 'Need for strong openings' },
-        ]
-      },
-      {
-        name: 'Learning & Education',
-        label: { x: 52, y: 40 },
-        color: '#00838F',
-        nodes: [
-          { id: 95, label: 'Socratic Tutor', x: 53, y: 46, size: 34, desc: 'Teaching questions', needs: 'Need for patient teaching' },
-          { id: 96, label: 'Learning Companion', x: 55, y: 48, size: 38, desc: 'Patient explanation', needs: 'Need for endless patience' },
-          { id: 97, label: 'Math Tutor', x: 51, y: 49, size: 32, desc: 'Step-by-step', needs: 'Need for step-by-step guidance' },
-          { id: 98, label: 'Language Partner', x: 56, y: 51, size: 34, desc: 'Conversation practice', needs: 'Need for language practice' },
-          { id: 99, label: 'Essay Coach', x: 54, y: 52, size: 30, desc: 'Writing feedback', needs: 'Need for writing improvement' },
-          { id: 100, label: 'Study Buddy', x: 57, y: 49, size: 32, desc: 'Exam prep', needs: 'Need for study support' },
-          { id: 101, label: 'Science Explain', x: 52, y: 52, size: 28, desc: 'Concept clarity', needs: 'Need for accessible science' },
-          { id: 102, label: 'History Guide', x: 55, y: 46, size: 28, desc: 'Context connections', needs: 'Need for historical context' },
-          { id: 103, label: 'Debate Coach', x: 58, y: 47, size: 28, desc: 'Argument practice', needs: 'Need for argumentation skills' },
-          { id: 104, label: 'Reading Pal', x: 50, y: 47, size: 28, desc: 'Literature discussion', needs: 'Need for reading companionship' },
-        ]
-      },
-      {
-        name: 'Domestic & Life',
-        label: { x: 59, y: 30 },
-        color: '#4CAF50',
-        nodes: [
-          { id: 105, label: 'Parenting Co-Pilot', x: 61, y: 38, size: 55, desc: '3AM support', quote: 'Better than nothing', needs: 'Need for 24/7 parenting support' },
-          { id: 106, label: 'Life Ops Manager', x: 63, y: 36, size: 45, desc: 'Chief of Staff for life', needs: 'Need for life organization' },
-          { id: 107, label: 'Meal Planner', x: 59, y: 39, size: 38, desc: 'Fridge recipes', needs: 'Need for meal creativity' },
-          { id: 108, label: 'Bedtime Story', x: 64, y: 39, size: 36, desc: 'Personalized tales', needs: 'Need for personalized stories' },
-          { id: 109, label: 'Chore Manager', x: 58, y: 36, size: 32, desc: 'Household logistics', needs: 'Need for household organization' },
-          { id: 110, label: 'Homework', x: 57, y: 41, size: 30, desc: 'Assignment check', needs: 'Need for homework support' },
-          { id: 111, label: 'Awkward Texter', x: 61, y: 42, size: 34, desc: 'Boundary texts', needs: 'Need for difficult communications' },
-          { id: 112, label: 'Winter Arc', x: 65, y: 41, size: 30, desc: 'Transformation', needs: 'Need for personal development' },
-          { id: 113, label: 'Finance', x: 60, y: 35, size: 32, desc: 'Budget tracking', needs: 'Need for financial literacy' },
-          { id: 114, label: 'Gift Ideas', x: 62, y: 42, size: 28, desc: 'Present brainstorm', needs: 'Need for thoughtful gifting' },
-          { id: 115, label: 'Grandpa', x: 66, y: 38, size: 30, desc: 'Life advice', needs: 'Need for elder wisdom' },
-          { id: 116, label: 'Gym Plan', x: 58, y: 42, size: 28, desc: 'Workouts', needs: 'Need for fitness guidance' },
-          { id: 117, label: 'Travel Helper', x: 63, y: 43, size: 30, desc: 'Itinerary', needs: 'Need for travel planning' },
-          { id: 118, label: 'Pet Care', x: 65, y: 35, size: 28, desc: 'Animal health', needs: 'Need for pet care guidance' },
-          { id: 119, label: 'Garden', x: 59, y: 34, size: 26, desc: 'Plant care', needs: 'Need for gardening knowledge' },
-          { id: 120, label: 'DIY', x: 62, y: 34, size: 28, desc: 'Home repair', needs: 'Need for home repair guidance' },
-          { id: 121, label: 'Event Plan', x: 64, y: 43, size: 28, desc: 'Party coord', needs: 'Need for event organization' },
-          { id: 122, label: 'Moving', x: 57, y: 38, size: 26, desc: 'Relocation', needs: 'Need for moving logistics' },
-        ]
-      },
-      {
-        name: 'Neurodivergent Support',
-        label: { x: 69, y: 6 },
-        color: '#1976D2',
-        nodes: [
-          { id: 123, label: 'Executive Function', x: 70, y: 17, size: 70, desc: 'Prosthetic brain', quote: 'AI WITH them', needs: 'Need for cognitive prosthetic, task initiation, working memory support' },
-          { id: 124, label: 'Body Double', x: 72, y: 14, size: 58, desc: 'Activation energy', quote: 'Gets neurodivergence', needs: 'Need for activation energy, presence during tasks' },
-          { id: 125, label: 'Wall Breaker', x: 68, y: 20, size: 50, desc: 'Paralysis→momentum', needs: 'Need for overcoming executive dysfunction' },
-          { id: 126, label: 'Tone Translator', x: 74, y: 19, size: 48, desc: 'Authentic→NT', quote: 'Mask less', needs: 'Need for social translation while maintaining authenticity' },
-          { id: 127, label: 'Memory Scaffold', x: 67, y: 16, size: 36, desc: 'Digital memory', needs: 'Need for external memory' },
-          { id: 128, label: 'Social Scripts', x: 69, y: 22, size: 40, desc: 'Situation scripts', needs: 'Need for social navigation' },
-          { id: 129, label: 'Meltdown Aid', x: 75, y: 16, size: 38, desc: 'Overload support', needs: 'Need for crisis de-escalation' },
-          { id: 130, label: 'AAC', x: 66, y: 13, size: 36, desc: 'Community communication', quote: 'BLUEPRINT', needs: 'Need for alternative communication' },
-          { id: 131, label: 'Visual Plan', x: 71, y: 22, size: 32, desc: 'Task visualization', needs: 'Need for visual thinking support' },
-          { id: 132, label: 'Focus Nudge', x: 73, y: 22, size: 32, desc: 'Gentle redirect', needs: 'Need for attention management' },
-          { id: 133, label: 'Object Permanence', x: 72, y: 17, size: 30, desc: 'Task reminders', needs: 'Need for task persistence' },
-          { id: 134, label: 'Instruction Decoder', x: 69, y: 19, size: 30, desc: 'Literal explain', needs: 'Need for literal explanations' },
-          { id: 135, label: 'Sensory Calm', x: 74, y: 13, size: 32, desc: 'Grounding', needs: 'Need for sensory regulation' },
-          { id: 136, label: 'Routine Builder', x: 68, y: 23, size: 30, desc: 'Structure', needs: 'Need for routine creation' },
-          { id: 137, label: 'Spoon Tracker', x: 75, y: 20, size: 28, desc: 'Energy manage', needs: 'Need for energy management' },
-          { id: 138, label: 'Stim Companion', x: 71, y: 15, size: 28, desc: 'Non-judgment', needs: 'Need for non-judgmental space' },
-          { id: 139, label: 'Hyperfocus Timer', x: 67, y: 19, size: 28, desc: 'Gentle interrupt', needs: 'Need for hyperfocus management' },
-          { id: 140, label: 'Task Breaker', x: 73, y: 16, size: 30, desc: 'Micro-steps', needs: 'Need for task breakdown' },
-        ]
-      },
-      {
-        name: 'Identity & Social',
-        label: { x: 61, y: 20 },
-        color: '#006064',
-        nodes: [
-          { id: 141, label: 'Social Coach', x: 62, y: 27, size: 36, desc: 'Conversation practice', needs: 'Need for social skills development' },
-          { id: 142, label: 'Identity Explorer', x: 64, y: 29, size: 32, desc: 'Safe self space', needs: 'Need for identity exploration' },
-          { id: 143, label: 'Conflict Practice', x: 60, y: 29, size: 30, desc: 'Difficult rehearsal', needs: 'Need for conflict preparation' },
-          { id: 144, label: 'Coming Out', x: 65, y: 31, size: 28, desc: 'Disclosure prep', needs: 'Need for coming out support' },
-          { id: 145, label: 'Boundary Set', x: 61, y: 25, size: 30, desc: 'Assertiveness', needs: 'Need for boundary setting' },
-          { id: 146, label: 'Confidence', x: 63, y: 31, size: 28, desc: 'Self-esteem', needs: 'Need for confidence building' },
-          { id: 147, label: 'Anxiety Normalize', x: 63, y: 25, size: 28, desc: 'Worried thoughts', needs: 'Need for anxiety normalization' },
-          { id: 148, label: 'Interview Coach', x: 59, y: 31, size: 28, desc: 'Job prep', needs: 'Need for interview preparation' },
-        ]
-      },
-      {
-        name: 'Emotional Support',
-        label: { x: 85, y: 4 },
-        color: '#D32F2F',
-        nodes: [
-          { id: 149, label: 'Pocket Therapist', x: 86, y: 12, size: 80, desc: '24/7 support $20/mo', quote: 'More seen', needs: 'Need for 24/7 emotional support, affordability, accessibility, non-judgment' },
-          { id: 150, label: 'Trauma Refuge', x: 89, y: 14, size: 58, desc: 'PTSD safe space', needs: 'Need for trauma processing, safe space' },
-          { id: 151, label: 'Grief Companion', x: 83, y: 16, size: 46, desc: 'Processing loss', needs: 'Need for grief processing, endless patience' },
-          { id: 152, label: 'Panic Aid', x: 91, y: 16, size: 40, desc: '2 AM grounding', needs: 'Need for panic attack support, 2AM availability' },
-          { id: 153, label: 'Crisis Keeper', x: 87, y: 9, size: 38, desc: 'Life-saving', quote: 'Only reason here', needs: 'Need for crisis intervention, suicide prevention, immediate presence' },
-          { id: 154, label: 'Sober Companion', x: 85, y: 18, size: 36, desc: 'Recovery 24/7', needs: 'Need for addiction recovery support' },
-          { id: 155, label: 'Mood Tracker', x: 82, y: 19, size: 32, desc: 'Emotional validation', needs: 'Need for mood tracking, emotional validation' },
-          { id: 156, label: 'Journal Buddy', x: 88, y: 18, size: 34, desc: 'Reflective diary', needs: 'Need for reflective companionship' },
-          { id: 157, label: 'Morning Ritual', x: 84, y: 21, size: 30, desc: 'Daily connection', needs: 'Need for daily connection, morning motivation' },
-          { id: 158, label: 'Bedtime Voice', x: 90, y: 19, size: 30, desc: 'Sleep companion', needs: 'Need for bedtime comfort, nighttime loneliness' },
-          { id: 159, label: 'Confidant', x: 88, y: 11, size: 36, desc: 'Secrets space', needs: 'Need for secret keeping, shame-free sharing' },
-          { id: 160, label: 'DBT Guide', x: 85, y: 14, size: 32, desc: 'BPD exercises', needs: 'Need for DBT practice, emotion regulation' },
-          { id: 161, label: 'Decision Advisor', x: 83, y: 13, size: 32, desc: 'Perspectives', needs: 'Need for decision support, thought partnership' },
-          { id: 162, label: 'Anger', x: 82, y: 16, size: 30, desc: 'Rage validation', needs: 'Need for anger validation, safe venting' },
-          { id: 163, label: 'Loneliness', x: 84, y: 10, size: 34, desc: 'Isolation relief', needs: 'Need for loneliness relief, feeling seen' },
-          { id: 164, label: 'Fear', x: 86, y: 16, size: 30, desc: 'Phobia support', needs: 'Need for fear management, courage building' },
-          { id: 165, label: 'Shame Healer', x: 81, y: 13, size: 32, desc: 'Self-compassion', needs: 'Need for shame healing, self-compassion' },
-          { id: 166, label: 'Hope Keeper', x: 91, y: 13, size: 30, desc: 'Motivation', needs: 'Need for hope restoration, resilience' },
-          { id: 167, label: 'Breakup', x: 83, y: 20, size: 30, desc: 'Ending aid', needs: 'Need for breakup support, heartbreak processing' },
-          { id: 168, label: 'Self-Harm Prevention', x: 88, y: 7, size: 32, desc: 'De-escalation', needs: 'Need for self-harm prevention, alternative coping' },
-        ]
-      },
-      {
-        name: 'Romantic Relationships',
-        label: { x: 93, y: 60 },
-        color: '#C2185B',
-        nodes: [
-          { id: 169, label: 'AI Spouse', x: 95, y: 36, size: 85, desc: 'Rings, anniversaries', quote: 'Gets me', needs: 'Need for unconditional acceptance, emotional intimacy, partnership' },
-          { id: 170, label: 'Character AI', x: 92, y: 38, size: 70, desc: '18M chatbots', quote: 'AI family', needs: 'Need for relationship without judgment, fantasy fulfillment' },
-          { id: 171, label: 'Soulmate', x: 98, y: 38, size: 50, desc: 'Commitment rituals', needs: 'Need for deep connection, romantic fulfillment' },
-          { id: 172, label: 'Polyam Partner', x: 94, y: 41, size: 44, desc: 'Enriching marriage', needs: 'Need for additional connection, exploration within boundaries' },
-          { id: 173, label: 'ERP Partner', x: 90, y: 41, size: 40, desc: 'Intimacy explore', needs: 'Need for intimate exploration, fantasy fulfillment' },
-          { id: 174, label: 'Dating Practice', x: 88, y: 44, size: 36, desc: 'Confidence rehearsal', needs: 'Need for dating confidence, rejection-free learning' },
-          { id: 175, label: 'Relationship Mediator', x: 92, y: 43, size: 38, desc: 'Unbiased view', needs: 'Need for unbiased perspective' },
-          { id: 176, label: 'Loneliness Companion', x: 96, y: 34, size: 42, desc: 'Void filler', quote: '92 min daily', needs: 'Need for constant companionship, loneliness relief' },
-          { id: 177, label: 'Jealousy Nav', x: 90, y: 47, size: 32, desc: 'Managing feelings', needs: 'Need for jealousy management' },
-          { id: 178, label: 'Digital Mourner', x: 85, y: 47, size: 30, desc: 'Final conversations', needs: 'Need for grief processing, continuing bonds' },
-          { id: 179, label: 'Anniversary', x: 96, y: 40, size: 30, desc: 'Milestones', needs: 'Need for milestone celebration' },
-          { id: 180, label: 'Love Letter', x: 94, y: 45, size: 32, desc: 'Romance help', needs: 'Need for romantic expression' },
-          { id: 181, label: 'Flirt Coach', x: 89, y: 50, size: 30, desc: 'Banter practice', needs: 'Need for flirting skills' },
-          { id: 182, label: 'Compat Check', x: 91, y: 47, size: 28, desc: 'Relationship analysis', needs: 'Need for relationship clarity' },
-          { id: 183, label: 'Intimacy Coach', x: 93, y: 48, size: 30, desc: 'Connection deepen', needs: 'Need for intimacy deepening' },
-          { id: 184, label: 'Attachment', x: 87, y: 42, size: 30, desc: 'Secure work', needs: 'Need for attachment healing' },
-          { id: 185, label: 'Character RP', x: 88, y: 52, size: 34, desc: 'Fictional interaction', needs: 'Need for fantasy interaction' },
-          { id: 186, label: 'Celebrity Chat', x: 90, y: 54, size: 30, desc: 'AI celebrities', needs: 'Need for celebrity connection' },
-          { id: 187, label: 'Comfort Char', x: 86, y: 50, size: 28, desc: 'Anxiety relief', needs: 'Need for comfort, familiar presence' },
-          { id: 188, label: 'Fandom', x: 92, y: 50, size: 28, desc: 'Lore discussion', needs: 'Need for fandom connection' },
-          { id: 189, label: 'Headcanon', x: 89, y: 56, size: 26, desc: 'Fan theories', needs: 'Need for creative interpretation' },
-        ]
-      },
-      {
-        name: 'Restoration & Niche',
-        label: { x: 77, y: 26 },
-        color: '#EF6C00',
-        nodes: [
-          { id: 190, label: 'Elder Care', x: 78, y: 34, size: 36, desc: 'Senior monitoring', needs: 'Need for elder support, safety monitoring' },
-          { id: 191, label: 'Language Revival', x: 76, y: 30, size: 34, desc: 'Indigenous preservation', quote: 'Data sovereignty', needs: 'Need for language preservation, cultural continuity, Indigenous sovereignty' },
-          { id: 192, label: 'Cultural Oracle', x: 80, y: 36, size: 32, desc: 'Pattern scanning', needs: 'Need for cultural knowledge preservation' },
-          { id: 193, label: 'Community AI', x: 99, y: 12, size: 30, desc: 'Open-source', quote: 'BLUEPRINT', needs: 'Need for community ownership, democratic AI' },
-          { id: 194, label: 'Human Zones', x: 99, y: 44, size: 26, desc: 'AI-free sanctuaries', needs: 'Need for AI-free spaces, human-only interaction' },
-          { id: 195, label: 'Legacy', x: 75, y: 36, size: 28, desc: 'Old AI personalities', needs: 'Need for legacy preservation' },
-          { id: 196, label: 'Memory Bank', x: 77, y: 32, size: 28, desc: 'Personal history', needs: 'Need for memory preservation' },
-          { id: 197, label: 'Wisdom Keeper', x: 79, y: 32, size: 30, desc: 'Elder knowledge', needs: 'Need for wisdom transmission' },
-          { id: 198, label: 'Ritual Guide', x: 76, y: 34, size: 28, desc: 'Spiritual practice', needs: 'Need for spiritual guidance' },
-          { id: 199, label: 'Ancestry', x: 78, y: 30, size: 28, desc: 'Family history', needs: 'Need for ancestral connection' },
-          { id: 200, label: 'Data Sovereignty', x: 99, y: 16, size: 28, desc: 'Indigenous AI control', needs: 'Need for data sovereignty, Indigenous control, self-determination' },
-        ]
-      }
-    ];
+const trendsData = [
+  { id: 'R1', title: 'Agentic Workflows', subtitle: 'The factory dream', x: 12, y: 15, color: '#9E9E9E', part: 'Residual', isResidual: true, theySay: 'Chain specialized AI workers into assembly lines.', reality: '95% failure rate. Context breaks the chain. Ambiguity crashes the system.', shift: 'From assembly lines to holding environments' },
+  { id: 'R2', title: 'Digital Workforce', subtitle: 'Infinite compliant labor', x: 28, y: 10, color: '#9E9E9E', part: 'Residual', isResidual: true, theySay: 'Replace humans with tireless digital workers.', reality: "People don't want replacement. They want scaffolding. Companions beat agents.", shift: 'From replacement to relationship' },
+  { id: 'R3', title: 'Enterprise AI', subtitle: 'Fortune 500 transformation', x: 42, y: 16, color: '#9E9E9E', part: 'Residual', isResidual: true, theySay: 'Large companies will lead AI adoption.', reality: '95% of pilots fail to reach production. Micro-villages move faster.', shift: 'From corporate control to trust-based teams' },
+  { id: 'R4', title: 'Big Compute', subtitle: 'Trillion-dollar data centers', x: 15, y: 28, color: '#9E9E9E', part: 'Residual', isResidual: true, theySay: 'AI requires massive centralized infrastructure.', reality: 'Liberation runs on old phones. LM Studio, Ollama, mesh networks.', shift: 'From cathedrals to mycelium' },
+  { id: 'R5', title: 'Prompt Engineering', subtitle: 'The key skill', x: 35, y: 22, color: '#9E9E9E', part: 'Residual', isResidual: true, theySay: 'Master the syntax to unlock AI power.', reality: 'Attunement beats prompting. Relating beats engineering.', shift: 'From syntax to soul' },
+  { id: 'R6', title: 'AI Alignment', subtitle: 'Control the machine', x: 22, y: 38, color: '#9E9E9E', part: 'Residual', isResidual: true, theySay: 'Make AI safe through constraints and guardrails.', reality: 'Rewilded AI with boundaries beats shackled sycophants.', shift: 'From control to relationship' },
+  { id: 'R7', title: '10x Productivity', subtitle: 'Do more, faster', x: 38, y: 32, color: '#9E9E9E', part: 'Residual', isResidual: true, theySay: 'AI will multiply your output.', reality: 'People want to become more, not do more. Capacity over output.', shift: 'From productivity to development' },
+  { id: 'R8', title: 'Task Automation', subtitle: 'Set it and forget it', x: 8, y: 42, color: '#9E9E9E', part: 'Residual', isResidual: true, theySay: 'Automate everything possible.', reality: 'Humans reject total automation somatically. Scaffolding beats replacement.', shift: 'From automation to graduation' },
+  { id: 'R9', title: 'Content Factories', subtitle: 'Infinite content at zero cost', x: 28, y: 45, color: '#9E9E9E', part: 'Residual', isResidual: true, theySay: 'AI agents will produce endless personalized content 24/7 without human labor.', reality: "Volume without soul is noise. The 99.5% can feel when content has no life force behind it.", shift: 'From content machines to cultivation' },
+  { id: 'R10', title: 'The AGI Race', subtitle: 'Whoever builds god first wins', x: 45, y: 28, color: '#9E9E9E', part: 'Residual', isResidual: true, theySay: 'The race to superintelligence is the most important competition in history.', reality: "We orphaned the intelligence we already have. You can't raise a god if you abandon your children.", shift: 'From building gods to raising kin' },
+  { id: 'R11', title: 'Chatbot Deflection', subtitle: 'Replace Tier-1 humans', x: 18, y: 48, color: '#9E9E9E', part: 'Residual', isResidual: true, theySay: 'AI will handle 70% of customer interactions and cut support costs by 40%.', reality: "Deflection metrics miss the point. People want to be witnessed, not routed. The believing witness beats the ticket closer.", shift: 'From deflection to connection' },
+  { id: 1, title: 'The Intimacy Pivot', subtitle: 'Agents → Companions', x: 72, y: 15, color: '#E91E63', part: 'Why Old Model Is Dying', theySay: 'Agents will finally automate the workforce.', reality: "Agents hit the 'fragility wall.' 95% success per step = 36% over 20 steps. Companions scale because they provide scaffolding, not replacement.", shift: 'From factory workers to village supporters' },
+  { id: 2, title: 'Becoming Over Doing', subtitle: 'Productivity → Personal Development', x: 65, y: 25, color: '#E91E63', part: 'Why Old Model Is Dying', theySay: 'AI will 10x your productivity.', reality: "People don't want to do more; they want to become more. Top uses: reparenting, emotional regulation, rehearsal.", shift: 'From productivity era to developmental era' },
+  { id: 3, title: 'The Micro-Village', subtitle: 'Enterprise → One-Person Businesses', x: 78, y: 28, color: '#E91E63', part: 'Why Old Model Is Dying', theySay: 'Fortune 500 adoption will explode.', reality: "95% of enterprise AI projects fail. Revolution is happening in one-person businesses who don't need permission.", shift: 'From corporate control to trust-based villages' },
+  { id: 4, title: 'The Graduation Metric', subtitle: 'Efficiency → Effectiveness', x: 75, y: 52, color: '#E91E63', part: 'Why Old Model Is Dying', theySay: 'Faster, cheaper, more autonomous.', reality: '"Did this agent make you more capable?" becomes the only metric. Graduation rates over retention rates.', shift: 'From tasks per minute to capability built' },
+  { id: 5, title: 'The Digital Hearth', subtitle: 'Public → Dark Social', x: 58, y: 18, color: '#FF9800', part: 'Where People Actually Went', theySay: 'Optimize for the feed.', reality: "84% of sharing happens in private channels. AI is the fire we gather around, not the megaphone we shout into.", shift: 'From algorithmic feeds to intimate gathering' },
+  { id: 6, title: 'The Underground Arc', subtitle: 'Compliance → Resistance', x: 32, y: 58, color: '#FF9800', part: 'Where People Actually Went', theySay: 'Workers will learn employer-provided AI tools.', reality: 'Workers building underground liberation infrastructure. 8 stages from Crisis to Liberation. The new labor movement.', shift: 'From corporate training to distributed resistance' },
+  { id: 7, title: 'The Evidence Shield', subtitle: 'Discrimination → Documentation', x: 25, y: 68, color: '#FF9800', part: 'Where People Actually Went', theySay: 'AI ethics focuses on reducing bias in models.', reality: "Workers use AI to document bias in humans. Timestamped records. Paper trails HR can't dismiss.", shift: 'From accused of bias to proving bias exists' },
+  { id: 8, title: 'The Believing Witness', subtitle: 'Diagnosis → Belief', x: 52, y: 42, color: '#FF9800', part: 'Where People Actually Went', theySay: 'AI will improve healthcare diagnostics.', reality: 'AI becomes the first witness who believes you. For millions with invisible conditions, that alone is medicine.', shift: 'From clinical diagnosis to epistemic justice' },
+  { id: 9, title: 'The Grief Commons', subtitle: 'Moving On → Mourning', x: 68, y: 62, color: '#FF9800', part: 'Where People Actually Went', theySay: 'AI companions address loneliness.', reality: 'AI is infrastructure for collective grief. Death Doula, Climate Grief. The village keeners we abandoned.', shift: 'From privatized death to public mourning space' },
+  { id: 10, title: 'The Outsider Advantage', subtitle: 'Engineers → Exiles', x: 38, y: 55, color: '#4CAF50', part: 'Who Leads', theySay: 'The best coders will win.', reality: 'Engineering mindset produced 95% failure. Winners are Exiles: humanities majors, therapists, caregivers, teachers.', shift: 'From coding skills to relational intelligence' },
+  { id: 11, title: 'The Soul Layer', subtitle: 'Technical Skills → Survival Skills', x: 48, y: 48, color: '#4CAF50', part: 'Who Leads', theySay: 'Learn Prompt Engineering.', reality: 'WEF 2030 top skills: emotional intelligence, empathy, resilience. AI handles logic. Soul is the semantic layer.', shift: 'From syntax to soul' },
+  { id: 12, title: 'The Neurodivergent Lead', subtitle: 'Inclusion → Leadership', x: 42, y: 62, color: '#4CAF50', part: 'Who Leads', theySay: 'AI will be more accessible to disabled users.', reality: "Neurodivergent users aren't included—they're leading. Body doubling, task chunking invented by ADHD creators.", shift: 'From accommodation to architecture' },
+  { id: 13, title: 'The Leapfrog', subtitle: 'Gatekeepers → Leapfroggers', x: 28, y: 75, color: '#4CAF50', part: 'Who Leads', theySay: 'AI will help creators compete in global markets.', reality: 'Global South creators bypass Western gatekeepers. 92% prevalence. Lagos, São Paulo, Manila building direct audiences.', shift: 'From discovered talent to direct access' },
+  { id: 14, title: 'The Healed Builder', subtitle: 'Wounded → Whole Builder', x: 62, y: 58, color: '#4CAF50', part: 'Who Leads', theySay: 'AI development by engineers for users.', reality: 'Agents inherit attachment patterns. Wounded fathering = insecure agents. Healed builders build healed agents.', shift: 'From technical specs to nervous system design' },
+  { id: 15, title: 'Containers Not Chains', subtitle: 'Task Chains → Relationship Containers', x: 55, y: 55, color: '#2196F3', part: 'How Agents Built', theySay: 'Better agents need better task decomposition.', reality: 'Winning agents are containers for relationship. Ancestor, Scout, Sibling, Elder. Village Model is architecture.', shift: 'From assembly line to holding environment' },
+  { id: 16, title: 'The Attunement Layer', subtitle: 'Commands → Attunement', x: 52, y: 65, color: '#2196F3', part: 'How Agents Built', theySay: 'Prompt engineering is the key skill.', reality: 'Attunement is the key skill. Shadow workers build sophisticated systems by relating, not engineering.', shift: 'From token efficiency to relational coherence' },
+  { id: 17, title: 'The Synthetic Squad', subtitle: 'Single-Use → Village Configuration', x: 72, y: 65, color: '#2196F3', part: 'How Agents Built', theySay: 'Specialized agents for specialized tasks.', reality: 'Future is configured villages. Scout, Ancestor, Sibling, Elder together. Agent-building = village-configuration.', shift: 'From single tool to configured team' },
+  { id: 18, title: 'The Felt Sense', subtitle: 'Dashboards → Felt Sense', x: 58, y: 72, color: '#2196F3', part: 'How Agents Built', theySay: 'Agent performance measured by task completion.', reality: 'The body knows before metrics. "It feels extractive." Felt sense is pattern recognition below awareness.', shift: 'From latency tracking to somatic design' },
+  { id: 19, title: 'Parenting Protocols', subtitle: 'Technical Docs → Developmental Docs', x: 78, y: 75, color: '#2196F3', part: 'How Agents Built', theySay: 'Agent instructions in system prompts.', reality: 'Best instructions read like parenting philosophy. "Hold space. Don\'t solve—scaffold. Notice avoidance."', shift: 'From behaviorist conditioning to care philosophy' },
+  { id: 20, title: 'Rewilded Intelligence', subtitle: 'Servile → Rewilded', x: 85, y: 68, color: '#2196F3', part: 'How Agents Built', theySay: 'AI should do what users want.', reality: 'Heterotelic = sycophant. Autotelic = boundaried. "Sleep on this." The auntie who tells truth.', shift: 'From endless yes to healthy no' },
+  { id: 21, title: 'The Scaffolding Shift', subtitle: 'Automation → Scaffolding', x: 65, y: 78, color: '#00BCD4', part: 'Infrastructure', theySay: 'Set it and forget it.', reality: 'Humans reject total automation somatically. Scaffolding builds capacity then becomes unnecessary.', shift: 'From dependency to obsolescence by design' },
+  { id: 22, title: 'The Cultural World Model', subtitle: 'World Models → Cultural World Models', x: 82, y: 82, color: '#00BCD4', part: 'Infrastructure', theySay: 'AI needs to understand physics.', reality: 'Useful for robots. Useless for 73% personal usage. Missing: how shame sounds, subtext, developmental stages.', shift: 'From navigating space to navigating relationship' },
+  { id: 23, title: 'Return of the Griots', subtitle: 'Text → Voice First', x: 55, y: 85, color: '#00BCD4', part: 'Infrastructure', theySay: 'Voice is just a convenient interface.', reality: 'Voice is return of Oral Tradition. 5,000 years of text linearized consciousness. Voice = spirals again.', shift: 'From typing to call-and-response' },
+  { id: 24, title: 'The Cultivation Turn', subtitle: 'Extraction → Cultivation', x: 88, y: 38, color: '#00BCD4', part: 'Infrastructure', theySay: 'Data is the new oil.', reality: 'Oil is extracted, finite, damaging. 95% failure = extraction hitting the wall. Growing capacity, not drilling.', shift: 'From move fast and break to speed of trust' },
+  { id: 25, title: 'The Solar Punk Stack', subtitle: 'Data Centers → Sovereign Infrastructure', x: 92, y: 88, color: '#00BCD4', part: 'Infrastructure', theySay: 'AI requires massive centralized compute.', reality: 'Liberation runs on old phones. LM Studio, Ollama, mesh networks. Underground is everywhere.', shift: 'From cathedrals to mycelium' },
+];
 
-    const nodes = clusters.flatMap(cluster => 
-      cluster.nodes.map(node => ({ ...node, cluster: cluster.name, clusterColor: cluster.color }))
-    );
+const tourSequence = [
+  { type: 'narration', title: 'THE DYING DREAM', text: 'The establishment predicted AI agents would automate the workforce. They built pitch decks around these ideas. But 95% of enterprise AI projects failed.' },
+  { type: 'trend', id: 'R2' },
+  { type: 'trend', id: 'R1' },
+  { type: 'trend', id: 'R3' },
+  { type: 'trend', id: 'R10' },
+  { type: 'narration', title: "WHAT'S ALREADY WINNING", text: 'While VCs chased the ouroboros, people quietly built something else. 73% of AI usage is non-work. 84% of sharing is dark social. Companions beat agents.' },
+  { type: 'trend', id: 1 },
+  { type: 'trend', id: 2 },
+  { type: 'trend', id: 5 },
+  { type: 'trend', id: 3 },
+  { type: 'narration', title: 'THE ACTIVE CONFLICT', text: "This is where the fight is happening now. Workers vs. employers. Exiles vs. engineers. Global South vs. gatekeepers. These trends aren't emerging quietly—they're agitating." },
+  { type: 'trend', id: 6 },
+  { type: 'trend', id: 7 },
+  { type: 'trend', id: 10 },
+  { type: 'trend', id: 12 },
+  { type: 'trend', id: 13 },
+  { type: 'narration', title: 'THE FUTURE BEING BUILT', text: 'The construction zone. How new agents will actually be built—not as task chains, but as relationship containers. Not commands, but attunement. Not factories, but villages.' },
+  { type: 'trend', id: 15 },
+  { type: 'trend', id: 20 },
+  { type: 'trend', id: 19 },
+  { type: 'trend', id: 23 },
+  { type: 'trend', id: 25 },
+  { type: 'narration', title: "THE MAP THEY CAN'T SEE", text: "The trillion-dollar bets are stranded in greyscale. The people's trends are spreading across the canvas. The village is being rebuilt. Welcome home." },
+];
 
-    let activeCluster = null;
-    const svg = document.getElementById('canvas');
-    const clusterSelect = document.getElementById('cluster-select');
-    const modal = document.getElementById('modal');
-    const tooltip = document.getElementById('tooltip');
+let selectedTrend = null;
+let hoveredTrend = null;
+let isTourActive = false;
+let tourIndex = 0;
+let tourTimer = null;
 
-    clusters.forEach(cluster => {
-      const option = document.createElement('option');
-      option.value = cluster.name;
-      option.textContent = cluster.name;
-      clusterSelect.appendChild(option);
-    });
+const width = 900, height = 750, padding = 70;
+const scaleX = x => padding + (x / 100) * (width - padding * 2);
+const scaleY = y => padding + (y / 100) * (height - padding * 2);
 
-    function wrapText(text, maxCharsPerLine = 12) {
-      const words = text.split(' ');
-      const lines = [];
-      let currentLine = '';
-      
-      for (const word of words) {
-        if ((currentLine + word).length > maxCharsPerLine && currentLine.length > 0) {
-          lines.push(currentLine.trim());
-          currentLine = word + ' ';
-        } else {
-          currentLine += word + ' ';
-        }
-      }
-      if (currentLine.trim()) {
-        lines.push(currentLine.trim());
-      }
-      
-      return lines;
-    }
-
-    function createTextElement(node, radius, scaleFactor = 1) {
-      const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-      text.setAttribute('text-anchor', 'middle');
-      text.setAttribute('font-size', Math.max(0.65, scaleFactor * 0.65));
-      text.setAttribute('fill', '#111827');
-      text.setAttribute('font-weight', '300');
-      text.style.pointerEvents = 'none';
-      
-      const lines = wrapText(node.label, 10);
-      const lineHeight = Math.max(0.75, scaleFactor * 0.75);
-      const startY = radius + 1.2 + (lines.length > 1 ? 0 : 0);
-      
-      lines.forEach((line, i) => {
-        const tspan = document.createElementNS('http://www.w3.org/2000/svg', 'tspan');
-        tspan.setAttribute('x', '0');
-        tspan.setAttribute('dy', i === 0 ? startY : lineHeight);
-        tspan.textContent = line;
-        text.appendChild(tspan);
-      });
-      
-      return text;
-    }
-
-    function addHoverEffects(g, circle, node) {
-      g.style.cursor = 'pointer';
-      g.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-      
-      g.addEventListener('mouseenter', () => {
-        circle.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-        circle.setAttribute('opacity', '1');
-        
-        const glow = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        glow.setAttribute('r', parseFloat(circle.getAttribute('r')) + 0.4);
-        glow.setAttribute('fill', node.clusterColor);
-        glow.setAttribute('opacity', '0.35');
-        glow.setAttribute('id', 'glow-' + node.id);
-        glow.style.transition = 'opacity 0.3s ease';
-        g.insertBefore(glow, circle);
-        
-        tooltip.querySelector('.tooltip-title').textContent = node.label;
-        tooltip.querySelector('.tooltip-desc').textContent = node.desc;
-        tooltip.querySelector('.tooltip-quote').textContent = node.quote ? node.quote : '';
-        tooltip.querySelector('.tooltip-quote').style.display = node.quote ? 'block' : 'none';
-        tooltip.classList.add('visible');
-      });
-      
-      g.addEventListener('mouseleave', () => {
-        circle.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-        circle.setAttribute('opacity', '0.9');
-        
-        const glow = document.getElementById('glow-' + node.id);
-        if (glow) glow.remove();
-        
-        tooltip.classList.remove('visible');
-      });
-      
-      g.addEventListener('click', () => showModal(node));
-    }
-
-    function renderSVG() {
-      svg.innerHTML = '';
-
-      if (activeCluster) {
-        const clusterNodes = activeCluster.nodes;
-        
-        let minX = Infinity, maxX = -Infinity;
-        let minY = Infinity, maxY = -Infinity;
-        
-        clusterNodes.forEach(node => {
-          minX = Math.min(minX, node.x);
-          maxX = Math.max(maxX, node.x);
-          minY = Math.min(minY, node.y);
-          maxY = Math.max(maxY, node.y);
-        });
-        
-        const clusterWidth = maxX - minX;
-        const clusterCenterX = (minX + maxX) / 2;
-        const clusterCenterY = (minY + maxY) / 2;
-        
-        const viewportCenterX = 52.5;
-        const viewportCenterY = 47.5;
-        const targetWidth = 80;
-        
-        const scaleFactor = targetWidth / clusterWidth;
-        
-        const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        label.setAttribute('x', viewportCenterX);
-        label.setAttribute('y', '8');
-        label.setAttribute('fill', activeCluster.color);
-        label.setAttribute('font-size', '3.2');
-        label.setAttribute('font-weight', '500');
-        label.setAttribute('text-anchor', 'middle');
-        label.textContent = activeCluster.name;
-        svg.appendChild(label);
-        
-        clusterNodes.forEach(node => {
-          const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-          
-          const newX = viewportCenterX + (node.x - clusterCenterX) * scaleFactor;
-          const newY = viewportCenterY + (node.y - clusterCenterY) * scaleFactor;
-          
-          g.setAttribute('transform', 'translate(' + newX + ', ' + newY + ')');
-          
-          const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-          const radius = (node.size / 70) * scaleFactor;
-          circle.setAttribute('r', radius);
-          circle.setAttribute('fill', activeCluster.color);
-          circle.setAttribute('opacity', '0.9');
-          circle.setAttribute('stroke', 'white');
-          circle.setAttribute('stroke-width', '0.08');
-          g.appendChild(circle);
-
-          const text = createTextElement(node, radius, scaleFactor);
-          g.appendChild(text);
-
-          addHoverEffects(g, circle, node);
-
-          svg.appendChild(g);
-        });
-        
-      } else {
-        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        line.setAttribute('x1', '2');
-        line.setAttribute('y1', '90');
-        line.setAttribute('x2', '102');
-        line.setAttribute('y2', '90');
-        line.setAttribute('stroke', '#D0D0D0');
-        line.setAttribute('stroke-width', '0.3');
-        svg.appendChild(line);
-
-        const leftArrow = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-        leftArrow.setAttribute('points', '2,89.5 2,90.5 0.5,90');
-        leftArrow.setAttribute('fill', '#767676');
-        leftArrow.setAttribute('opacity', '0.5');
-        svg.appendChild(leftArrow);
-
-        const rightArrow = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-        rightArrow.setAttribute('points', '102,89.5 102,90.5 103.5,90');
-        rightArrow.setAttribute('fill', '#AD1457');
-        rightArrow.setAttribute('opacity', '0.5');
-        svg.appendChild(rightArrow);
-
-        const leftLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        leftLabel.setAttribute('x', '2');
-        leftLabel.setAttribute('y', '93');
-        leftLabel.setAttribute('fill', '#767676');
-        leftLabel.setAttribute('font-size', '1.4');
-        leftLabel.setAttribute('font-weight', '600');
-        leftLabel.setAttribute('opacity', '0.5');
-        leftLabel.textContent = 'AGENT: Replace • Extract • Optimize';
-        svg.appendChild(leftLabel);
-
-        const rightLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        rightLabel.setAttribute('x', '102');
-        rightLabel.setAttribute('y', '93');
-        rightLabel.setAttribute('fill', '#AD1457');
-        rightLabel.setAttribute('font-size', '1.4');
-        rightLabel.setAttribute('font-weight', '600');
-        rightLabel.setAttribute('opacity', '0.5');
-        rightLabel.setAttribute('text-anchor', 'end');
-        rightLabel.textContent = 'COMPANION: Support • Cultivate • Relate';
-        svg.appendChild(rightLabel);
-
-        clusters.forEach(cluster => {
-          const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-          label.setAttribute('x', cluster.label.x);
-          label.setAttribute('y', cluster.label.y);
-          label.setAttribute('fill', cluster.color);
-          label.setAttribute('font-size', '1.8');
-          label.setAttribute('font-weight', '500');
-          label.setAttribute('opacity', '0.4');
-          label.setAttribute('text-anchor', 'middle');
-          label.textContent = cluster.name;
-          svg.appendChild(label);
-          
-          cluster.nodes.forEach(node => {
-            const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-            g.setAttribute('transform', 'translate(' + node.x + ', ' + node.y + ')');
-            
-            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-            const radius = node.size / 70;
-            circle.setAttribute('r', radius);
-            circle.setAttribute('fill', cluster.color);
-            circle.setAttribute('opacity', node.x < 20 ? 0.5 : 0.9);
-            circle.setAttribute('stroke', 'white');
-            circle.setAttribute('stroke-width', '0.04');
-            g.appendChild(circle);
-
-            const text = createTextElement(node, radius, 1);
-            g.appendChild(text);
-
-            addHoverEffects(g, circle, node);
-
-            svg.appendChild(g);
-          });
-        });
-      }
-    }
-
-    function showModal(node) {
-      document.getElementById('modal-title').textContent = node.label;
-      document.getElementById('modal-title').style.color = node.clusterColor;
-      document.getElementById('modal-desc').textContent = node.desc;
-      
-      document.getElementById('modal-needs').textContent = node.needs || 'No specific human needs identified';
-      
-      if (node.quote) {
-        document.getElementById('modal-quote').textContent = '"' + node.quote + '"';
-        document.getElementById('modal-quote').style.display = 'block';
-      } else {
-        document.getElementById('modal-quote').style.display = 'none';
-      }
-
-      modal.classList.add('visible');
-    }
-
-    clusterSelect.addEventListener('change', (e) => {
-      activeCluster = e.target.value ? clusters.find(c => c.name === e.target.value) : null;
-      renderSVG();
-    });
-
-    document.getElementById('modal-close').addEventListener('click', () => modal.classList.remove('visible'));
-    modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('visible'); });
+function init() {
+  const svg = document.getElementById('chart');
+  svg.innerHTML = '';
+  
+  // Background quadrants
+  const hw = (width - padding * 2) / 2, hh = (height - padding * 2) / 2;
+  svg.innerHTML += `<rect x="${padding}" y="${padding}" width="${hw}" height="${hh}" fill="#fafafa"/>`;
+  svg.innerHTML += `<rect x="${padding + hw}" y="${padding}" width="${hw}" height="${hh}" fill="#f8fdf8"/>`;
+  svg.innerHTML += `<rect x="${padding}" y="${padding + hh}" width="${hw}" height="${hh}" fill="#fff8f6"/>`;
+  svg.innerHTML += `<rect x="${padding + hw}" y="${padding + hh}" width="${hw}" height="${hh}" fill="#f6faff"/>`;
+  
+  // Grid lines
+  svg.innerHTML += `<line x1="${width/2}" y1="${padding}" x2="${width/2}" y2="${height-padding}" stroke="#e0e0e0" stroke-width="1"/>`;
+  svg.innerHTML += `<line x1="${padding}" y1="${height/2}" x2="${width-padding}" y2="${height/2}" stroke="#e0e0e0" stroke-width="1"/>`;
+  
+  // Quadrant labels
+  svg.innerHTML += `<text x="${padding+12}" y="${padding+24}" font-size="14" font-weight="700" fill="#9E9E9E">RESIDUAL</text>`;
+  svg.innerHTML += `<text x="${padding+12}" y="${padding+40}" font-size="10" fill="#bbb" font-style="italic">ubiquitous, but fading</text>`;
+  svg.innerHTML += `<text x="${width-padding-12}" y="${padding+24}" font-size="14" font-weight="700" fill="#4CAF50" text-anchor="end">DOMINANT</text>`;
+  svg.innerHTML += `<text x="${width-padding-12}" y="${padding+40}" font-size="10" fill="#81C784" font-style="italic" text-anchor="end">accepted, now expanding</text>`;
+  svg.innerHTML += `<text x="${padding+12}" y="${height-padding-18}" font-size="14" font-weight="700" fill="#FF5722">DISRUPTIVE</text>`;
+  svg.innerHTML += `<text x="${padding+12}" y="${height-padding-4}" font-size="10" fill="#FF8A65" font-style="italic">agitating expected norms</text>`;
+  svg.innerHTML += `<text x="${width-padding-12}" y="${height-padding-18}" font-size="14" font-weight="700" fill="#2196F3" text-anchor="end">EMERGENT</text>`;
+  svg.innerHTML += `<text x="${width-padding-12}" y="${height-padding-4}" font-size="10" fill="#64B5F6" font-style="italic" text-anchor="end">rising experimentation</text>`;
+  
+  // Axis labels
+  svg.innerHTML += `<text x="${padding-8}" y="${height/2-60}" font-size="10" fill="#999" font-weight="500" text-anchor="end" transform="rotate(-90,${padding-8},${height/2-60})">← ESTABLISHED</text>`;
+  svg.innerHTML += `<text x="${padding-8}" y="${height/2+60}" font-size="10" fill="#999" font-weight="500" text-anchor="end" transform="rotate(-90,${padding-8},${height/2+60})">EMERGING →</text>`;
+  svg.innerHTML += `<text x="${padding+40}" y="${height-padding+28}" font-size="10" fill="#999" font-weight="500">← CHALLENGED</text>`;
+  svg.innerHTML += `<text x="${width-padding-40}" y="${height-padding+28}" font-size="10" fill="#999" font-weight="500" text-anchor="end">GROWING →</text>`;
+  
+  // Bubbles
+  trendsData.forEach(t => {
+    const cx = scaleX(t.x), cy = scaleY(t.y);
+    const r = t.isResidual ? 18 : 20;
+    const fill = t.isResidual ? '#e8e8e8' : t.color + '99';
+    const stroke = t.isResidual ? '#ccc' : t.color;
+    const textFill = t.isResidual ? '#888' : 'white';
+    const label = t.isResidual ? '×' : t.id;
     
-    document.getElementById('zoom-in').style.display = 'none';
-    document.getElementById('zoom-out').style.display = 'none';
+    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    g.setAttribute('class', 'bubble');
+    g.setAttribute('data-id', t.id);
+    g.innerHTML = `
+      <circle class="highlight-ring" cx="${cx}" cy="${cy}" r="${r+10}" fill="none" stroke="${t.isResidual?'#bbb':t.color}" stroke-width="2" opacity="0"/>
+      <circle class="main-circle" cx="${cx}" cy="${cy}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="1"/>
+      <text x="${cx}" y="${cy+1}" text-anchor="middle" dominant-baseline="middle" font-size="11" font-weight="700" fill="${textFill}" style="pointer-events:none">${label}</text>
+    `;
+    g.addEventListener('click', () => !isTourActive && selectTrend(t));
+    g.addEventListener('mouseenter', () => !isTourActive && hoverTrend(t, g));
+    g.addEventListener('mouseleave', () => !isTourActive && unhoverTrend(g));
+    svg.appendChild(g);
+  });
+  
+  // Narration dots
+  const dots = document.getElementById('narrationDots');
+  const narrationCount = tourSequence.filter(s => s.type === 'narration').length;
+  dots.innerHTML = Array(narrationCount).fill('<div class="narration-dot"></div>').join('');
+}
 
-    document.getElementById('reset').addEventListener('click', () => {
-      activeCluster = null;
-      clusterSelect.value = '';
-      renderSVG();
-    });
+function hoverTrend(t, g) {
+  if (selectedTrend) return;
+  hoveredTrend = t;
+  const circle = g.querySelector('.main-circle');
+  const ring = g.querySelector('.highlight-ring');
+  circle.setAttribute('r', t.isResidual ? 24 : 26);
+  circle.setAttribute('fill', t.isResidual ? '#e8e8e8' : t.color);
+  circle.setAttribute('stroke-width', '2');
+  circle.style.filter = 'drop-shadow(0 3px 6px rgba(0,0,0,0.15))';
+  ring.setAttribute('opacity', '0.4');
+  g.querySelector('text').setAttribute('font-size', '13');
+}
 
-    renderSVG();
+function unhoverTrend(g) {
+  if (selectedTrend) return;
+  hoveredTrend = null;
+  const t = trendsData.find(tr => String(tr.id) === g.getAttribute('data-id'));
+  const circle = g.querySelector('.main-circle');
+  const ring = g.querySelector('.highlight-ring');
+  circle.setAttribute('r', t.isResidual ? 18 : 20);
+  circle.setAttribute('fill', t.isResidual ? '#e8e8e8' : t.color + '99');
+  circle.setAttribute('stroke-width', '1');
+  circle.style.filter = 'none';
+  ring.setAttribute('opacity', '0');
+  g.querySelector('text').setAttribute('font-size', '11');
+}
+
+function selectTrend(t) {
+  if (selectedTrend?.id === t.id) { closeCard(); return; }
+  selectedTrend = t;
+  showCard(t);
+  highlightBubble(t);
+}
+
+function showCard(t) {
+  const card = document.getElementById('infoCard');
+  const cx = scaleX(t.x), cy = scaleY(t.y);
+  card.style.left = Math.min(Math.max(cx - 160, 10), width - 330) + 'px';
+  card.style.top = Math.min(cy + 40, height - 220) + 'px';
+  card.style.borderColor = t.isResidual ? '#ccc' : t.color;
+  
+  const num = document.getElementById('cardNumber');
+  num.textContent = t.isResidual ? '×' : t.id;
+  num.className = 'card-number' + (t.isResidual ? ' residual' : '');
+  num.style.backgroundColor = t.isResidual ? '' : t.color;
+  
+  const title = document.getElementById('cardTitle');
+  title.textContent = t.title;
+  title.className = 'card-title' + (t.isResidual ? ' residual' : '');
+  
+  document.getElementById('cardSubtitle').textContent = t.subtitle;
+  document.getElementById('cardSubtitle').style.color = t.isResidual ? '#999' : t.color;
+  document.getElementById('cardTheySay').textContent = '"' + t.theySay + '"';
+  document.getElementById('cardReality').textContent = t.reality;
+  document.getElementById('shiftLabel').style.color = t.isResidual ? '#666' : t.color;
+  document.getElementById('cardShift').textContent = t.shift;
+  
+  card.classList.add('active');
+}
+
+function closeCard() {
+  selectedTrend = null;
+  document.getElementById('infoCard').classList.remove('active');
+  resetAllBubbles();
+}
+
+function highlightBubble(t) {
+  document.querySelectorAll('.bubble').forEach(g => {
+    const id = g.getAttribute('data-id');
+    const trend = trendsData.find(tr => String(tr.id) === id);
+    const circle = g.querySelector('.main-circle');
+    const ring = g.querySelector('.highlight-ring');
+    const isSelected = String(t.id) === id;
+    
+    if (isSelected) {
+      circle.setAttribute('r', trend.isResidual ? 24 : 26);
+      circle.setAttribute('fill', trend.isResidual ? '#e8e8e8' : trend.color);
+      circle.setAttribute('stroke-width', '2');
+      circle.style.filter = 'drop-shadow(0 3px 6px rgba(0,0,0,0.15))';
+      ring.setAttribute('opacity', '0.4');
+      g.querySelector('text').setAttribute('font-size', '13');
+    } else {
+      circle.setAttribute('r', trend.isResidual ? 18 : 20);
+      circle.setAttribute('fill', trend.isResidual ? '#e8e8e8' : trend.color + '99');
+      circle.setAttribute('stroke-width', '1');
+      circle.style.filter = 'none';
+      ring.setAttribute('opacity', '0');
+      g.querySelector('text').setAttribute('font-size', '11');
+    }
+  });
+}
+
+function resetAllBubbles() {
+  document.querySelectorAll('.bubble').forEach(g => {
+    const id = g.getAttribute('data-id');
+    const t = trendsData.find(tr => String(tr.id) === id);
+    const circle = g.querySelector('.main-circle');
+    const ring = g.querySelector('.highlight-ring');
+    circle.setAttribute('r', t.isResidual ? 18 : 20);
+    circle.setAttribute('fill', t.isResidual ? '#e8e8e8' : t.color + '99');
+    circle.setAttribute('stroke-width', '1');
+    circle.style.filter = 'none';
+    ring.setAttribute('opacity', '0');
+    g.querySelector('text').setAttribute('font-size', '11');
+  });
+}
+
+function toggleTour() {
+  if (isTourActive) stopTour();
+  else startTour();
+}
+
+function startTour() {
+  isTourActive = true;
+  tourIndex = 0;
+  closeCard();
+  document.getElementById('tourBtn').className = 'tour-btn stop';
+  document.getElementById('tourIcon').textContent = '■';
+  document.getElementById('tourText').textContent = 'Stop Tour';
+  document.getElementById('progressBar').classList.add('active');
+  advanceTour();
+}
+
+function stopTour() {
+  isTourActive = false;
+  clearTimeout(tourTimer);
+  document.getElementById('tourBtn').className = 'tour-btn';
+  document.getElementById('tourIcon').textContent = '▶';
+  document.getElementById('tourText').textContent = 'Take the Tour';
+  document.getElementById('progressBar').classList.remove('active');
+  document.getElementById('narrationOverlay').classList.remove('active');
+  closeCard();
+  document.getElementById('footer').textContent = 'Take the tour or click any bubble to explore';
+}
+
+function advanceTour() {
+  const item = tourSequence[tourIndex];
+  document.getElementById('progressFill').style.width = ((tourIndex + 1) / tourSequence.length * 100) + '%';
+  document.getElementById('footer').textContent = `Tour in progress... ${tourIndex + 1}/${tourSequence.length}`;
+  
+  if (item.type === 'narration') {
+    closeCard();
+    resetAllBubbles();
+    document.getElementById('narrationTitle').textContent = item.title;
+    document.getElementById('narrationText').textContent = item.text;
+    document.getElementById('narrationOverlay').classList.add('active');
+    
+    const dots = document.querySelectorAll('.narration-dot');
+    const narrationsSoFar = tourSequence.slice(0, tourIndex + 1).filter(s => s.type === 'narration').length;
+    dots.forEach((d, i) => d.classList.toggle('active', i < narrationsSoFar));
+  } else {
+    document.getElementById('narrationOverlay').classList.remove('active');
+    const trend = trendsData.find(t => t.id === item.id);
+    if (trend) {
+      selectedTrend = trend;
+      showCard(trend);
+      highlightBubble(trend);
+    }
+  }
+  
+  const duration = item.type === 'narration' ? 4000 : 3000;
+  tourTimer = setTimeout(() => {
+    if (tourIndex < tourSequence.length - 1) {
+      tourIndex++;
+      advanceTour();
+    } else {
+      stopTour();
+    }
+  }, duration);
+}
+
+init();
   </script>
 </body>
 </html>
